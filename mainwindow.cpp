@@ -1,9 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "worker.h"
 #include <QStatusBar>
 #include <QLineEdit>
 #include <QThreadPool>
-#include <cmath>
+#include <QThread>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -47,20 +48,29 @@ void MainWindow::startProcess()
     }
 
     isCanceled = false;
-    QThreadPool::globalInstance()->start([this, number]{
-        double sum = 0.0;
-        for (size_t i = 0; i < number; i++) {
-            if (isCanceled.load()) {
-                break;
-            }
-            sum += std::sin(std::sqrt(i));
-        }
 
-        QMetaObject::invokeMethod(this, [this, sum]{
-            ui->statusbar->showMessage(QString::number(sum), 3000);
-            ui->lineEdit->setReadOnly(false);
-        });
+    QThread *thread = new QThread(this);
+    Worker *worker = new Worker();
+
+    worker->moveToThread(thread);
+
+    connect(thread, &QThread::started, worker, [worker, number]{
+        worker->doWork(number);
     });
+    connect(ui->cancelButton, &QPushButton::clicked, worker, &Worker::cancel);
+
+    connect(worker, &Worker::resultReady, this, [this](double res){
+        ui->statusbar->showMessage(QString::number(res), 3000);
+    });
+
+    connect(worker, &Worker::resultReady, thread, &QThread::quit);
+    connect(thread, &QThread::finished, worker, &Worker::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(thread, &QThread::finished, this, [this]{
+        ui->lineEdit->setReadOnly(false);
+    });
+
+    thread->start();
 }
 
 

@@ -11,6 +11,7 @@ qt_add_executable(untitled
     mainwindow.cpp
     mainwindow.h
     mainwindow.ui
+    worker.h worker.cpp
 )
 
 target_link_libraries(untitled
