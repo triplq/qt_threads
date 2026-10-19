@@ -1,0 +1,9 @@
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/untitled.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/edit_cache.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/rebuild_cache.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/list_install_components.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/install.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/install/local.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/install/strip.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/untitled_autogen_timestamp_deps.dir
+/Users/aleksejarosenko/Projects/cpp_rem/untitled/build/Qt_6_12_0_for_macOS_Debug/CMakeFiles/untitled_autogen.dir
