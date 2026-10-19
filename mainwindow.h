@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <atomic>
+#include <QThread>
+#include "worker.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -15,7 +16,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     int count = 0;
     double dummy = 0.0;
-    std::atomic<bool> isCanceled{false};
+
+    QThread *m_thread;
+    Worker *m_worker;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -23,8 +26,6 @@ public:
 
 private slots:
     void startProcess();
-
-    void terminProcess();
 
     void checkStatus();
 
