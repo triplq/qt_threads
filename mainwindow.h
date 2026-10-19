@@ -15,7 +15,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     int count = 0;
     double dummy = 0.0;
-    std::atomic<bool> isCanceled = false;
+    std::atomic<bool> isCanceled{false};
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);

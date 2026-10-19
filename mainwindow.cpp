@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    isCanceled = true;
+    QThreadPool::globalInstance()->waitForDone();
     delete ui;
 }
 
@@ -35,7 +37,7 @@ void MainWindow::startProcess()
     ui->lineEdit->setText("");
     bool ok;
     int number = txt.toInt(&ok);
-    if (ok) {
+    if (ok && number >= 0) {
         ui->statusbar->showMessage("Process is started", 3000);
         ui->lineEdit->setReadOnly(true);
     }
@@ -46,15 +48,16 @@ void MainWindow::startProcess()
 
     isCanceled = false;
     QThreadPool::globalInstance()->start([this, number]{
+        double sum = 0.0;
         for (size_t i = 0; i < number; i++) {
             if (isCanceled.load()) {
                 break;
             }
-            dummy += std::sin(std::sqrt(i));
+            sum += std::sin(std::sqrt(i));
         }
 
-        QMetaObject::invokeMethod(this, [this]{
-            ui->statusbar->showMessage(QString::number(dummy), 3000);
+        QMetaObject::invokeMethod(this, [this, sum]{
+            ui->statusbar->showMessage(QString::number(sum), 3000);
             ui->lineEdit->setReadOnly(false);
         });
     });
