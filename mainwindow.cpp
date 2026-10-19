@@ -20,14 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
 
-    if (m_thread && m_thread->isRunning()) {
+    if (m_worker)
         m_worker->cancel();
+    if (m_thread) {
         m_thread->quit();
         m_thread->wait();
     }
 
-    delete m_worker;
-    // delete m_thread;
     delete ui;
 }
 
@@ -47,26 +46,30 @@ void MainWindow::startProcess()
         return;
     }
 
-    m_thread = new QThread(this);
-    m_worker = new Worker();
+    QThread *thread = new QThread(this);
+    Worker *worker = new Worker();
+    worker->moveToThread(thread);
+    m_worker = worker;
+    m_thread = thread;
 
-    m_worker->moveToThread(m_thread);
 
-    connect(m_thread, &QThread::started, m_worker, [this, number]{
-        m_worker->doWork(number);
+    connect(m_thread, &QThread::started, worker, [worker, number]{
+        worker->doWork(number);
     });
-    connect(ui->cancelButton, &QPushButton::clicked, m_worker, &Worker::cancel, Qt::DirectConnection);
+    connect(ui->cancelButton, &QPushButton::clicked, worker, &Worker::cancel, Qt::DirectConnection);
 
-    connect(m_worker, &Worker::resultReady, this, [this](double res){
+    connect(worker, &Worker::resultReady, this, [this](double res){
         ui->statusbar->showMessage(QString::number(res), 3000);
     });
 
-    connect(m_worker, &Worker::resultReady, m_thread, &QThread::quit);
-    connect(m_thread, &QThread::finished, this, [this]{
+    connect(worker, &Worker::resultReady, thread, &QThread::quit);
+    connect(thread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(thread, &QThread::finished, this, [this]{
         ui->lineEdit->setReadOnly(false);
     });
 
-    m_thread->start();
+    thread->start();
 }
 
 

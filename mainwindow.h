@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include "worker.h"
+#include <QPointer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,8 +18,8 @@ class MainWindow : public QMainWindow
     int count = 0;
     double dummy = 0.0;
 
-    QThread *m_thread;
-    Worker *m_worker;
+    QPointer<QThread> m_thread;
+    QPointer<Worker> m_worker;
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
